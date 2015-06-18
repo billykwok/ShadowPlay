@@ -1,15 +1,17 @@
-var gulp = require('gulp');
-var del = require('del');
-var copy = require('gulp-copy');
-var sourcemaps = require('gulp-sourcemaps');
-var typescript = require('gulp-typescript');
-var concat = require('gulp-concat');
-var uglify = require('gulp-uglify');
+var gulp = require('gulp'),
+	del = require('del'),
+	util = require('gulp-util'),
+	gulpif = require('gulp-if'),
+	sourcemaps = require('gulp-sourcemaps'),
+	ts = require('gulp-typescript'),
+	concat = require('gulp-concat'),
+	uglify = require('gulp-uglify'),
+	connect = require('gulp-connect');
 
 var envPaths = {
-		build: 'build/',
-		src: 'src/',
-		vendor: 'vendor/'
+		build: './build/',
+		src: './src/',
+		vendor: './vendor/'
 	},
 	buildPaths = {
 		js: envPaths.build + 'js/',
@@ -17,6 +19,7 @@ var envPaths = {
 	},
 	srcPaths = {
 		ts: envPaths.src + 'ts/',
+		tsdBundle: envPaths.src + 'ts/tsd/bundle.d.ts',
 		sass: envPaths.src + 'sass/'
 	},
 	libPaths = {
@@ -24,20 +27,42 @@ var envPaths = {
 	};
 
 gulp.task('clean', function(cb) {
-	del(['build'], cb);
+	del([
+		envPaths.build
+	], cb);
 });
 
-gulp.task('scripts', ['clean'], function() {
+var tsProject = ts.createProject({
+	noEmitOnError: false,
+	removeComments: true,
+	declarationFiles: false,
+	noExternalResolve: false,
+	module: 'commonjs',
+	out: 'app.min.js'
+});
+
+gulp.task('scripts', function() {
 	return gulp.src([
-			libPaths.threejs,
-			srcPaths.ts
+			srcPaths.ts + 'app.ts',
+			libPaths.three + 'build/three.min.js'
 		])
 		.pipe(sourcemaps.init())
-		.pipe(typescript())
+		.pipe(gulpif(/[.]ts$/, ts(tsProject)))
 		.pipe(uglify())
-		.pipe(concat('all.min.js'))
-		.pipe(sourcemaps.write())
+		.pipe(sourcemaps.write('./'))
 		.pipe(gulp.dest(buildPaths.js));
+});
+
+gulp.task('connect', function() {
+	connect.server({
+		root: './',
+		port: 8000,
+		livereload: true
+	});
+});
+
+gulp.task('connectStop', function() {
+	connect.serverClose();
 });
 
 gulp.task('watch', function() {

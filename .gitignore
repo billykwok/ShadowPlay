@@ -1,1 +1,30 @@
+###OSX###
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+._*
+.Spotlight-V100
+.Trashes
+.DS_Store
+.AppleDouble
+.LSOverride
+
+###Bower###
 vendor/
+
+###SASS###
+.sass-cache
+*.css.map
+
+###Compass###
+.sass-cache
+
+
+###SublimeText###
+*.tmlanguage.cache
+*.tmPreferences.cache
+*.stTheme.cache
+*.sublime-workspace
+sftp-config.json
