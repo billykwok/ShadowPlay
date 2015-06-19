@@ -48,14 +48,13 @@ gulp.task('scripts', function() {
 		])
 		.pipe(sourcemaps.init())
 		.pipe(gulpif(/[.]ts$/, ts(tsProject)))
-		.pipe(uglify())
+		//.pipe(uglify())
 		.pipe(sourcemaps.write('./'))
 		.pipe(gulp.dest(buildPaths.js));
 });
 
 gulp.task('connect', function() {
 	connect.server({
-		root: './',
 		port: 8000,
 		livereload: true
 	});
@@ -66,7 +65,9 @@ gulp.task('connectStop', function() {
 });
 
 gulp.task('watch', function() {
-	gulp.watch(srcPaths.scripts, ['scripts']);
+	gulp.watch([
+		srcPaths.ts + '**/*.ts'
+	], ['scripts']);
 });
 
-gulp.task('default', ['watch', 'scripts']);
+gulp.task('default', ['watch']);
