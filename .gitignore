@@ -13,6 +13,7 @@ Temporary Items
 
 ###Bower###
 vendor/
+node_modules/
 
 ###SASS###
 .sass-cache

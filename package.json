@@ -16,6 +16,7 @@
     "gulp-concat": "^2.5.2",
     "gulp-connect": "^2.2.0",
     "gulp-if": "^1.2.5",
+    "gulp-imagemin": "^2.3.0",
     "gulp-notify": "^2.2.0",
     "gulp-plumber": "^1.0.1",
     "gulp-rename": "^1.2.2",
@@ -28,6 +29,7 @@
     "merge-stream": "^0.1.7",
     "node-libs-browser": "^0.5.2",
     "run-sequence": "^1.1.1",
+    "typescript-collections": "^1.0.4",
     "watchify": "^3.2.2"
   }
 }

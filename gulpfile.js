@@ -6,23 +6,28 @@ var gulp = require('gulp'),
 	ts = require('gulp-typescript'),
 	concat = require('gulp-concat'),
 	uglify = require('gulp-uglify'),
+	imgmin = require('gulp-imagemin'),
 	connect = require('gulp-connect');
 
 var envPaths = {
 		build: './build/',
 		src: './src/',
-		vendor: './vendor/'
+		vendor: './vendor/',
+		npm: './node_modules/'
 	},
 	buildPaths = {
 		js: envPaths.build + 'js/',
-		css: envPaths.build + 'css/'
+		css: envPaths.build + 'css/',
+		img: envPaths.build + 'img/'
 	},
 	srcPaths = {
 		ts: envPaths.src + 'ts/',
 		tsdBundle: envPaths.src + 'ts/tsd/bundle.d.ts',
-		sass: envPaths.src + 'sass/'
+		sass: envPaths.src + 'sass/',
+		img: envPaths.src + 'img/'
 	},
 	libPaths = {
+		tscollections: envPaths.npm + 'typescript-collections/',
 		three: envPaths.vendor + 'threejs/'
 	};
 
@@ -41,7 +46,14 @@ var tsProject = ts.createProject({
 	out: 'app.min.js'
 });
 
-gulp.task('scripts', function() {
+gulp.task('ts_settup', function() {
+	return gulp.src([
+			libPaths.tscollections + 'collections.ts'
+		])
+		.pipe(gulp.dest(srcPaths.ts));
+});
+
+gulp.task('scripts', ['ts_settup'], function() {
 	return gulp.src([
 			srcPaths.ts + 'app.ts',
 			libPaths.three + 'build/three.min.js'
@@ -51,6 +63,12 @@ gulp.task('scripts', function() {
 		//.pipe(uglify())
 		.pipe(sourcemaps.write('./'))
 		.pipe(gulp.dest(buildPaths.js));
+});
+
+gulp.task('img', function() {
+	return gulp.src(srcPaths.img + '*')
+		.pipe(imgmin())
+		.pipe(gulp.dest(buildPaths.img));
 });
 
 gulp.task('connect', function() {
@@ -70,4 +88,4 @@ gulp.task('watch', function() {
 	], ['scripts']);
 });
 
-gulp.task('default', ['watch']);
+gulp.task('default', ['scripts', 'img', 'watch']);

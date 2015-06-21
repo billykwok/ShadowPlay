@@ -1,19 +1,20 @@
 {
-    "name": "ShadowPlay",
-    "version": "0.0.1",
-    "authors": [
-        "Billy Kwok <xobkwok@gmail.com>"
-    ],
-    "main": "index.html",
-    "license": "MIT",
-    "ignore": [
-        "**/.*",
-        "node_modules",
-        "test",
-        "tests",
-        "vendor/"
-    ],
-    "devDependencies": {
-        "threejs": "*"
-    }
+  "name": "ShadowPlay",
+  "version": "0.0.1",
+  "authors": [
+    "Billy Kwok <xobkwok@gmail.com>"
+  ],
+  "main": "index.html",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "test",
+    "tests",
+    "vendor/"
+  ],
+  "devDependencies": {
+    "threejs": "*",
+    "threex.keyboardstate": "*"
+  }
 }
