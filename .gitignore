@@ -12,6 +12,7 @@ Temporary Items
 .LSOverride
 
 ###Bower###
+build/
 vendor/
 node_modules/
 
