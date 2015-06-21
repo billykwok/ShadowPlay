@@ -11,7 +11,7 @@ module RunningElderly {
 			this.segmentIds = new Array();
 		}
 
-		animate = (keyboard: THREEx.KeyboardState): void => {
+		animate = (keyboard: KeyboardState): void => {
 			if (this.segmentIds.length == 0) {
 				var roadSegment = new RoadSegment();
 				this.segmentIds.push(roadSegment.id);

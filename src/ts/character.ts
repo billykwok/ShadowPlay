@@ -6,13 +6,13 @@ module RunningElderly {
 		scene: REScene;
 		character: Character;
 
-		constructor(scene: REScene, keyboard: THREEx.KeyboardState) {
+		constructor(scene: REScene, keyboard: KeyboardState) {
 			this.scene = scene;
 			this.character = new Character();
 			scene.add(this.character);
 		}
 
-		animate = (keyboard: THREEx.KeyboardState): void => {
+		animate = (keyboard: KeyboardState): void => {
 			if (keyboard.down('left')) {
 				if (this.character.position.x > - TRACK_WIDTH) this.character.translateX(- TRACK_WIDTH);
 			} else if (keyboard.down('right')) {

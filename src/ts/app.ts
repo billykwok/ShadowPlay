@@ -9,7 +9,7 @@ module RunningElderly {
 	var renderer: THREE.WebGLRenderer;
 
 	export class Game {
-		keyboard: THREEx.KeyboardState;
+		keyboard: KeyboardState;
 		roadManager: RoadManager;
 		characterManager: CharacterManager;
 
@@ -30,7 +30,7 @@ module RunningElderly {
 			renderer.setSize(window.innerWidth, window.innerHeight);
 			this.bindTo(domElem);
 
-			this.keyboard = new THREEx.KeyboardState();
+			this.keyboard = new KeyboardState();
 			this.roadManager = new RoadManager(scene);
 			this.characterManager = new CharacterManager(scene, this.keyboard);
 		}
