@@ -7,7 +7,8 @@ var gulp = require('gulp'),
 	concat = require('gulp-concat'),
 	uglify = require('gulp-uglify'),
 	imgmin = require('gulp-imagemin'),
-	connect = require('gulp-connect');
+	connect = require('gulp-connect'),
+	runSequence = require('run-sequence');
 
 var envPaths = {
 		build: './build/',
@@ -73,19 +74,27 @@ gulp.task('img', function() {
 
 gulp.task('connect', function() {
 	connect.server({
+		root: envPaths.build,
 		port: 8000,
 		livereload: true
 	});
 });
 
-gulp.task('connectStop', function() {
-	connect.serverClose();
+gulp.task('connect_reload', function() {
+	connect.reload();
 });
 
-gulp.task('watch', function() {
+gulp.task('build', function(callback) {
+	runSequence('clean', 'scripts', 'img', callback);
+});
+
+gulp.task('watch', ['connect'], function() {
 	gulp.watch([
-		srcPaths.ts + '**/*.ts'
-	], ['scripts']);
+		srcPaths.ts + '**/*.ts',
+		srcPaths.img + '**/*.png|jpg'
+	], function() {
+		runSequence('build', 'connect_reload');
+	});
 });
 
-gulp.task('default', ['scripts', 'img', 'watch']);
+gulp.task('default', ['watch']);
