@@ -7,19 +7,17 @@ Shadow Play
 * bower
 
 ###Installation:
-1. Install Bower packages by
-	```
-	bower update
-	```
+1. Intsall bower, npm and tsd
 2. Install npm packages by
 	```
 	npm update
 	```
-3. Install tsd definition by
+3. Update tsd, npm and bower by
 	```
-	tsd update
+	gulp update
 	```
-4. Gulp by
+4. Build and watch by
 	```
 	gulp
 	```
+5. Go to http://localhost:8000/
