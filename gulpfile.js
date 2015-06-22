@@ -1,15 +1,19 @@
 var gulp = require('gulp'),
+	install = require('gulp-install'),
+	tsd = require('gulp-tsd'),
 	del = require('del'),
 	util = require('gulp-util'),
 	gulpif = require('gulp-if'),
 	sourcemaps = require('gulp-sourcemaps'),
 	ts = require('gulp-typescript'),
+	sass = require('gulp-sass'),
 	concat = require('gulp-concat'),
 	uglify = require('gulp-uglify'),
 	imgmin = require('gulp-imagemin'),
 	connect = require('gulp-connect'),
 	runSequence = require('run-sequence').use(gulp),
 	watch = require('gulp-watch'),
+	plumber = require('gulp-plumber'),
 	notify = require('gulp-notify');
 
 var envPaths = {
@@ -80,6 +84,28 @@ gulp.task('html', function() {
 		.pipe(gulp.dest(envPaths.build));
 });
 
+gulp.task('npm_bower_update', function() {
+	gulp.src([
+		'./package.json',
+		'./bower.json'
+	]).pipe(install());
+});
+
+gulp.task('tsd_update', function() {
+	tsd({
+		command: 'reinstall',
+		config: './tsd.json'
+	});
+});
+
+gulp.task('update', function() {
+	runSequence('npm_bower_update', 'tsd_update');
+});
+
+gulp.task('build', ['clean'], function() {
+	runSequence('scripts', 'img', 'html');
+});
+
 gulp.task('server', function() {
 	connect.server({
 		root: 'build',
@@ -88,21 +114,11 @@ gulp.task('server', function() {
 	});
 });
 
-gulp.task('livereload', function() {
-    gulp.src(envPaths.build + '**/*.*')
-		.pipe(watch(envPaths.build + '**/*.*'))
-		.pipe(connect.reload());
-});
-
-gulp.task('build', ['clean'], function() {
-	runSequence('scripts', 'img', 'html');
-});
-
 gulp.task('watch', function() {
 	gulp.watch([
-			srcPaths.ts + '**/*.ts',
-			srcPaths.img + '**/*.png'
-		], ['build']);
+		srcPaths.ts + '**/*.ts',
+		srcPaths.img + '**/*.png'
+	], ['build']);
 	watch(envPaths.build + '**/*.*')
 		.pipe(connect.reload());
 });
