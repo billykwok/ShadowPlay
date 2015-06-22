@@ -8,7 +8,9 @@ var gulp = require('gulp'),
 	uglify = require('gulp-uglify'),
 	imgmin = require('gulp-imagemin'),
 	connect = require('gulp-connect'),
-	runSequence = require('run-sequence');
+	runSequence = require('run-sequence').use(gulp),
+	watch = require('gulp-watch'),
+	notify = require('gulp-notify');
 
 var envPaths = {
 		build: './build/',
@@ -22,6 +24,7 @@ var envPaths = {
 		img: envPaths.build + 'img/'
 	},
 	srcPaths = {
+		html: envPaths.src + '*.html',
 		ts: envPaths.src + 'ts/',
 		tsdBundle: envPaths.src + 'ts/tsd/bundle.d.ts',
 		sass: envPaths.src + 'sass/',
@@ -32,10 +35,10 @@ var envPaths = {
 		three: envPaths.vendor + 'threejs/'
 	};
 
-gulp.task('clean', function(cb) {
+gulp.task('clean', function() {
 	del([
 		envPaths.build
-	], cb);
+	]);
 });
 
 var tsProject = ts.createProject({
@@ -72,29 +75,36 @@ gulp.task('img', function() {
 		.pipe(gulp.dest(buildPaths.img));
 });
 
-gulp.task('connect', function() {
+gulp.task('html', function() {
+	return gulp.src(srcPaths.html + '*')
+		.pipe(gulp.dest(envPaths.build));
+});
+
+gulp.task('server', function() {
 	connect.server({
-		root: envPaths.build,
+		root: 'build',
 		port: 8000,
 		livereload: true
 	});
 });
 
-gulp.task('connect_reload', function() {
-	connect.reload();
+gulp.task('livereload', function() {
+    gulp.src(envPaths.build + '**/*.*')
+		.pipe(watch(envPaths.build + '**/*.*'))
+		.pipe(connect.reload());
 });
 
-gulp.task('build', function(callback) {
-	runSequence('clean', 'scripts', 'img', callback);
+gulp.task('build', ['clean'], function() {
+	runSequence('scripts', 'img', 'html');
 });
 
-gulp.task('watch', ['connect'], function() {
+gulp.task('watch', function() {
 	gulp.watch([
-		srcPaths.ts + '**/*.ts',
-		srcPaths.img + '**/*.png|jpg'
-	], function() {
-		runSequence('build', 'connect_reload');
-	});
+			srcPaths.ts + '**/*.ts',
+			srcPaths.img + '**/*.png'
+		], ['build']);
+	watch(envPaths.build + '**/*.*')
+		.pipe(connect.reload());
 });
 
-gulp.task('default', ['watch']);
+gulp.task('default', ['build', 'server', 'watch']);

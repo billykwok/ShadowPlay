@@ -44,6 +44,7 @@ module RunningElderly {
 		}
 
 		render(): void {
+			var curTime;
 			requestAnimationFrame(() => this.render());
 			this.keyboard.update();
 			this.roadManager.animate(this.keyboard);

@@ -24,7 +24,7 @@ module RunningElderly {
 	class Character extends THREE.Mesh {
 		constructor() {
 			var geometry: THREE.PlaneBufferGeometry = new THREE.PlaneBufferGeometry(TRACK_WIDTH, TRACK_WIDTH);
-			var texture: THREE.Texture = THREE.ImageUtils.loadTexture('build/img/elderly.png');
+			var texture: THREE.Texture = THREE.ImageUtils.loadTexture('img/elderly.png');
 			texture.minFilter = THREE.NearestFilter;
 			var material: THREE.Material = new THREE.MeshBasicMaterial({
 				map: texture,
