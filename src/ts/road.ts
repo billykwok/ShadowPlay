@@ -11,6 +11,22 @@ module RunningElderly {
 			this.segmentIds = new Array();
 		}
 
+		getObstacle(id: string): RoadObstacle {
+			return <RoadObstacle> this.scene.getObjectById(id);
+		}
+
+		getAllObstacles(): Array<RoadObstacle> {
+			var obstacles = new Array<RoadObstacle>();
+			this.segmentIds.forEach((segmentId) => {
+				this.scene.getObjectById(segmentId).children.forEach((track) => {
+					track.children.forEach((obj) => {
+						if (obj instanceof RoadObstacle) obstacles.push(obj);
+					})
+				});
+			});
+			return obstacles;
+		}
+
 		animate = (keyboard: KeyboardState): void => {
 			if (this.segmentIds.length == 0) {
 				var roadSegment = new RoadSegment();
@@ -27,7 +43,7 @@ module RunningElderly {
 				this.segmentIds.push(roadSegment.id);
 				this.scene.add(roadSegment);
 			}
-			this.segmentIds.forEach((segmentId) => ++this.scene.getObjectById(segmentId).position.z);
+			this.segmentIds.forEach((segmentId) => this.scene.getObjectById(segmentId).position.z += 1);
 		}
 	}
 
@@ -38,13 +54,23 @@ module RunningElderly {
 
 		constructor() {
 			super();
-			this.roadTrackLeft = new RoadTrackLeft();
+			var arr: Array<number> = new Array<number>();
+			while (arr.length < 3) {
+				var randomnumber: number = Math.round(Math.random() * 2.5) * 2;
+				var found: boolean = false;
+				for (var i = 0; i < arr.length; ++i) {
+					if (arr[i] == randomnumber) { found = true; break; }
+				}
+				if (!found) arr[arr.length] = randomnumber;
+			}
+
+			this.roadTrackLeft = new RoadTrackLeft(arr[0]);
 			this.add(this.roadTrackLeft);
 
-			this.roadTrackMiddle = new RoadTrackMiddle();
+			this.roadTrackMiddle = new RoadTrackMiddle(arr[1]);
 			this.add(this.roadTrackMiddle);
 
-			this.roadTrackRight = new RoadTrackRight();
+			this.roadTrackRight = new RoadTrackRight(arr[2]);
 			this.add(this.roadTrackRight);
 
 			this.translateZ(- MAX_SEGMENT_NUMBER * SEGMENT_LENGTH);
@@ -53,14 +79,13 @@ module RunningElderly {
 
 	// abstract class
 	class RoadTrack extends THREE.Group {
-		constructor(material: THREE.Material) {
+		constructor(obstaclePosition: number) {
 			super();
-			var roadSurface: RoadSurface = new RoadSurface(material);
+			var roadSurface: RoadSurface = new RoadSurface();
 			this.add(roadSurface);
-			for (var i = 0; i < 3; ++i) {
-				if (Math.round(Math.random()))
-					this.add(new RoadObstacle(Math.round(Math.random() * 2.5) * 2, roadSurface.position));
-			}
+			this.add(Math.random() >= 0.5 ?
+				new RewardObstacle(obstaclePosition, roadSurface.position) :
+				new TrapObstacle(obstaclePosition, roadSurface.position));
 		}
 
 		addObstacle(obstacle: RoadObstacle): void {
@@ -77,53 +102,66 @@ module RunningElderly {
 	}
 
 	class RoadTrackLeft extends RoadTrack {
-		constructor() {
-			super(new THREE.MeshBasicMaterial({
-				color: new THREE.Color(Math.random() * 255, Math.random() * 255, Math.random() * 255).getHex(),
-				side: THREE.DoubleSide
-			}));
+		constructor(obstaclePosition: number) {
+			super(obstaclePosition);
 			this.translateX(TRACK_WIDTH);
 		}
 	}
 
 	class RoadTrackMiddle extends RoadTrack {
-		constructor() {
-			super(new THREE.MeshBasicMaterial({
-				color: new THREE.Color(Math.random() * 255, Math.random() * 255, Math.random() * 255).getHex(),
-				side: THREE.DoubleSide
-			}));
+		constructor(obstaclePosition: number) {
+			super(obstaclePosition);
 		}
 	}
 
 	class RoadTrackRight extends RoadTrack {
-		constructor() {
-			super(new THREE.MeshBasicMaterial({
-				color: new THREE.Color(Math.random() * 255, Math.random() * 255, Math.random() * 255).getHex(),
-				side: THREE.DoubleSide
-			}));
+		constructor(obstaclePosition: number) {
+			super(obstaclePosition);
 			this.translateX(-TRACK_WIDTH);
 		}
 	}
 
 	class RoadSurface extends THREE.Mesh {
-		constructor(material: THREE.Material) {
-			super(new THREE.PlaneBufferGeometry(TRACK_WIDTH, SEGMENT_LENGTH), material);
+		constructor() {
+			var geometry: THREE.PlaneBufferGeometry = new THREE.PlaneBufferGeometry(TRACK_WIDTH, SEGMENT_LENGTH);
+			var material: THREE.MeshBasicMaterial = new THREE.MeshBasicMaterial({
+				// color: new THREE.Color(Math.random() * 255, Math.random() * 255, Math.random() * 255).getHex(),
+				side: THREE.DoubleSide
+			});
+			super(geometry, material);
 			this.rotateX(Math.PI / 2);
 		}
 	}
 
-	class RoadObstacle extends THREE.Mesh {
-		index: number;
-		constructor(index: number, position: THREE.Vector3) {
+	export class RoadObstacle extends THREE.Mesh {
+		constructor(index: number, position: THREE.Vector3, color: number) {
 			var geometry: THREE.PlaneBufferGeometry = new THREE.PlaneBufferGeometry(TRACK_WIDTH, TRACK_WIDTH);
 			var material: THREE.Material = new THREE.MeshBasicMaterial({
-				color: 0xffffff,
+				color: color,
 				transparent: true,
-				opacity: 0.2,
+				opacity: 0.5,
 				side: THREE.DoubleSide
 			});
 			super(geometry, material);
 			this.position.set(position.x, position.y + TRACK_WIDTH * 0.5, position.z + index * TRACK_WIDTH - SEGMENT_LENGTH * 0.5);
 		}
 	}
+
+	export class RewardObstacle extends RoadObstacle {
+		constructor(index: number, position: THREE.Vector3) {
+			super(index, position, 0x00ff00);
+		}
+	}
+
+	export class TrapObstacle extends RoadObstacle {
+		isTouched: boolean;
+		constructor(index: number, position: THREE.Vector3) {
+			super(index, position, 0xff0000);
+			this.isTouched = false;
+		}
+		touch(): void {
+			this.isTouched = true;
+		}
+	}
+
 }
