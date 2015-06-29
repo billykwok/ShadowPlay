@@ -28,5 +28,6 @@ node_modules/
 *.tmlanguage.cache
 *.tmPreferences.cache
 *.stTheme.cache
+*.sublime-project
 *.sublime-workspace
 sftp-config.json

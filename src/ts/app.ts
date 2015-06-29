@@ -3,7 +3,7 @@
 /// <reference path="base.ts" />
 /// <reference path="road.ts" />
 /// <reference path="character.ts" />
-/// <reference path="scoreCounter.ts" />
+/// <reference path="score.ts" />
 
 module RunningElderly {
 	var scene: REScene;

@@ -13,5 +13,9 @@
             ]
         }
     },
+    "bluetooth": {
+        "uuids": ["1105", "1106"],
+        "socket": true
+    },
     "icons": {}
 }

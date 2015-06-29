@@ -1,6 +1,6 @@
 /// <reference path="tsd/bundle.d.ts" />
 /// <reference path="collections.ts" />
-/// <reference path="keyboardState.ts" />
+/// <reference path="keyboard.ts" />
 
 module RunningElderly {
 	export var SEGMENT_LENGTH: number = 60;

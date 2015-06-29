@@ -1,3 +1,5 @@
+/// <reference path="chrome/chrome.d.ts" />
+
 declare module chrome.serial {
 
      export interface ConnectionInfo {
