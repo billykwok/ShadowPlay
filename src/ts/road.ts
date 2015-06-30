@@ -27,7 +27,8 @@ module RunningElderly {
 			return obstacles;
 		}
 
-		animate = (keyboard: KeyboardState): void => {
+		animate = (keyboard: KeyboardState, speed: number): void => {
+			console.log('Speed: ' + speed);
 			if (this.segmentIds.length == 0) {
 				var roadSegment = new RoadSegment();
 				this.segmentIds.push(roadSegment.id);
@@ -43,7 +44,7 @@ module RunningElderly {
 				this.segmentIds.push(roadSegment.id);
 				this.scene.add(roadSegment);
 			}
-			this.segmentIds.forEach((segmentId) => this.scene.getObjectById(segmentId).position.z += 1);
+			this.segmentIds.forEach((segmentId) => this.scene.getObjectById(segmentId).position.z += speed);
 		}
 	}
 

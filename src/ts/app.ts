@@ -13,10 +13,13 @@ module RunningElderly {
 
 	export class Game {
 		keyboard: KeyboardState;
+		serial: SerialState;
 		roadManager: RoadManager;
 		characterManager: CharacterManager;
 		counter: ScoreCounter;
-		signal: string;
+
+		private speed: number;
+		private motion: string;
 
 		constructor(domElem: HTMLElement) {
 			scene = new REScene();
@@ -38,7 +41,19 @@ module RunningElderly {
 			renderer.setSize(window.innerWidth, window.innerHeight);
 			this.bindTo(domElem);
 
+			this.speed = 0.5;
+			this.motion = "";
+
 			this.keyboard = new KeyboardState();
+			this.serial = new SerialState((str: string) => {
+				if (str.charAt(0) === 'w') {
+					this.speed = 0.5 + Math.min(100, parseInt(str.slice(2, str.length)));
+					console.log(this.speed);
+				} else if (str.charAt(0) === 's') {
+					this.motion = parseInt(str.slice(2, str.length)) > 17000 ? "l" : "r";
+					console.log(this.motion);
+				}
+			});
 			this.roadManager = new RoadManager(scene);
 			this.characterManager = new CharacterManager(scene, this.keyboard);
 			this.counter = new ScoreCounter(<HTMLElement> (document.getElementsByClassName('my-counter')[0]));
@@ -56,9 +71,13 @@ module RunningElderly {
 			requestAnimationFrame(() => this.render());
 
 			this.keyboard.update();
-			this.roadManager.animate(this.keyboard);
+
+			this.roadManager.animate(this.keyboard, this.speed);
+
 			this.characterManager.keyboardAnimate(this.keyboard);
-			if (typeof this.signal != 'undefined') this.characterManager.serialAnimate(this.signal);
+			if (typeof this.motion != 'undefined')
+				this.characterManager.serialAnimate(this.motion);
+
 			this.characterManager.removeCollidedObjs(this.roadManager.getAllObstacles(), this.counter);
 
 			renderer.render(scene, camera);
@@ -70,38 +89,4 @@ module RunningElderly {
 window.onload = () => {
 	var game: RunningElderly.Game = new RunningElderly.Game(document.body);
 	game.start();
-
-	var id: number = 0;
-
-	chrome.serial.getDevices((ports) => {
-		for (var i = 0; i < ports.length; i++) {
-			console.log(ports[i].path);
-		}
-	});
-	chrome.serial.connect('/dev/cu.usbmodem1411', { bitrate: 115200 }, (info: chrome.serial.ConnectionInfo) => {
-		console.log(info);
-		id = info.connectionId;
-	});
-
-	function ab2str(buf: ArrayBuffer): string {
-		return String.fromCharCode.apply(null, new Uint8Array(buf));
-	}
-
-	function onLineReceived(strReceived: string): void {
-		game.signal = stringReceived;
-	}
-
-	var stringReceived: string = '';
-	chrome.serial.onReceive.addListener((info) => {
-		if (info.connectionId == id && info.data) {
-			var str = ab2str(info.data);
-			if (str.charAt(str.length - 1) === '\n') {
-				stringReceived += str.substring(0, str.length - 1);
-				onLineReceived(stringReceived);
-				stringReceived = '';
-			} else {
-				stringReceived += str;
-			}
-		}
-	});
 };

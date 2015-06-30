@@ -4,13 +4,11 @@
 
 module RunningElderly {
 	export class CharacterManager {
-		scene: REScene;
 		character: Character;
 		rayCaster: THREE.Raycaster;
 		lastReceived: string;
 
 		constructor(scene: REScene, keyboard: KeyboardState) {
-			this.scene = scene;
 			this.character = new Character();
 			this.rayCaster = new THREE.Raycaster();
 			scene.add(this.character);
@@ -28,10 +26,8 @@ module RunningElderly {
 			if (signal === this.lastReceived) return;
 
 			if (signal.charAt(0) === 'l' && this.character.position.x > - TRACK_WIDTH) {
-				console.log('left');
 				this.character.translateX(-TRACK_WIDTH);
 			} else if (signal.charAt(0) === 'r' && this.character.position.x < TRACK_WIDTH) {
-				console.log('right');
 				this.character.position.x += TRACK_WIDTH;
 			}
 			this.lastReceived = signal;
