@@ -16,13 +16,13 @@ module RunningElderly {
 
 		constructor(onLineReceived: (str: string) => void) {
 			this.id = 0;
-			this.devicePath = '';
-			this.strReceived = '';
+			this.devicePath = "";
+			this.strReceived = "";
 
 			chrome.serial.getDevices((ports) => {
 				for (var i = 0; i < ports.length; ++i) {
 					// console.log(ports[i].path);
-					if (ports[i].path.indexOf('/dev/cu.wch ch341') > -1) {
+					if (ports[i].path.indexOf("/dev/cu.wch ch341") > -1) {
 						console.log(ports[i].path);
 						this.devicePath = ports[i].path;
 						break;
@@ -34,10 +34,10 @@ module RunningElderly {
 		}
 
 		connect(): void {
-			if (this.devicePath === '') {
-				console.log('No device found!');
+			if (this.devicePath === "") {
+				console.log("No device found!");
 			} else {
-				chrome.serial.connect(this.devicePath, { bitrate: 9600 }, (info: chrome.serial.ConnectionInfo) => {
+				chrome.serial.connect(this.devicePath, { bitrate: 115200 }, (info: chrome.serial.ConnectionInfo) => {
 					console.log(info);
 					this.id = info.connectionId;
 				});
@@ -45,10 +45,10 @@ module RunningElderly {
 				chrome.serial.onReceive.addListener((info) => {
 					if (info.connectionId == this.id && info.data) {
 						var str = ab2str(info.data);
-						if (str.charAt(str.length - 1) === '\n') {
+						if (str.charAt(str.length - 1) === "\n") {
 							this.strReceived += str.substring(0, str.length - 1);
 							this._onLineReceived(this.strReceived);
-							this.strReceived = '';
+							this.strReceived = "";
 						} else {
 							this.strReceived += str;
 						}

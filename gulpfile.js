@@ -74,7 +74,7 @@ gulp.task('scripts', ['ts_settup'], function() {
 });
 
 gulp.task('img', function() {
-	return gulp.src(srcPaths.img + '*')
+	return gulp.src(srcPaths.img + '**/*')
 		.pipe(imgmin())
 		.pipe(gulp.dest(buildPaths.img));
 });
@@ -117,7 +117,7 @@ gulp.task('server', function() {
 gulp.task('watch', function() {
 	gulp.watch([
 		srcPaths.ts + '**/*.ts',
-		srcPaths.img + '**/*.png'
+		srcPaths.img + '**/*.{png,jpg}'
 	], ['build']);
 	watch(envPaths.build + '**/*.*')
 		.pipe(connect.reload());

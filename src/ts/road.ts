@@ -2,6 +2,11 @@
 /// <reference path="base.ts" />
 
 module RunningElderly {
+	var marketRewardImg: Array<string> = [
+		"img/scene_1/carrot.png", "img/scene_1/chilli.png", "img/scene_1/egg.png",
+		"img/scene_1/eggplant.png", "img/scene_1/tomato.png"
+	];
+
 	export class RoadManager {
 		scene: REScene;
 		segmentIds: Array<number>;
@@ -20,15 +25,16 @@ module RunningElderly {
 			this.segmentIds.forEach((segmentId) => {
 				this.scene.getObjectById(segmentId).children.forEach((track) => {
 					track.children.forEach((obj) => {
-						if (obj instanceof RoadObstacle) obstacles.push(obj);
-					})
+						if (obj instanceof RoadObstacle) {
+							obstacles.push(obj);
+						}
+					});
 				});
 			});
 			return obstacles;
 		}
 
 		animate = (keyboard: KeyboardState, speed: number): void => {
-			console.log('Speed: ' + speed);
 			if (this.segmentIds.length == 0) {
 				var roadSegment = new RoadSegment();
 				this.segmentIds.push(roadSegment.id);
@@ -45,7 +51,7 @@ module RunningElderly {
 				this.scene.add(roadSegment);
 			}
 			this.segmentIds.forEach((segmentId) => this.scene.getObjectById(segmentId).position.z += speed);
-		}
+		};
 	}
 
 	class RoadSegment extends THREE.Group {
@@ -62,7 +68,9 @@ module RunningElderly {
 				for (var i = 0; i < arr.length; ++i) {
 					if (arr[i] == randomnumber) { found = true; break; }
 				}
-				if (!found) arr[arr.length] = randomnumber;
+				if (!found) {
+					arr[arr.length] = randomnumber;
+				}
 			}
 
 			this.roadTrackLeft = new RoadTrackLeft(arr[0]);
@@ -126,8 +134,9 @@ module RunningElderly {
 		constructor() {
 			var geometry: THREE.PlaneBufferGeometry = new THREE.PlaneBufferGeometry(TRACK_WIDTH, SEGMENT_LENGTH);
 			var material: THREE.MeshBasicMaterial = new THREE.MeshBasicMaterial({
-				// color: new THREE.Color(Math.random() * 255, Math.random() * 255, Math.random() * 255).getHex(),
-				side: THREE.DoubleSide
+				transparent: true,
+				opacity: 0,
+				side: THREE.FrontSide
 			});
 			super(geometry, material);
 			this.rotateX(Math.PI / 2);
@@ -135,14 +144,19 @@ module RunningElderly {
 	}
 
 	export class RoadObstacle extends THREE.Mesh {
-		constructor(index: number, position: THREE.Vector3, color: number) {
-			var geometry: THREE.PlaneBufferGeometry = new THREE.PlaneBufferGeometry(TRACK_WIDTH, TRACK_WIDTH);
+		constructor(index: number, position: THREE.Vector3, imgPath: string) {
+			var geometry: THREE.PlaneBufferGeometry = new THREE.PlaneBufferGeometry(TRACK_WIDTH / 2, TRACK_WIDTH / 2);
+			var texture: THREE.Texture = THREE.ImageUtils.loadTexture(imgPath);
+			texture.minFilter = THREE.LinearMipMapNearestFilter;
+			texture.magFilter = THREE.NearestFilter;
+			texture.anisotropy = 8;
+
 			var material: THREE.Material = new THREE.MeshBasicMaterial({
-				color: color,
+				map: texture,
 				transparent: true,
-				opacity: 0.5,
-				side: THREE.DoubleSide
+				side: THREE.FrontSide
 			});
+
 			super(geometry, material);
 			this.position.set(position.x, position.y + TRACK_WIDTH * 0.5, position.z + index * TRACK_WIDTH - SEGMENT_LENGTH * 0.5);
 		}
@@ -150,14 +164,14 @@ module RunningElderly {
 
 	export class RewardObstacle extends RoadObstacle {
 		constructor(index: number, position: THREE.Vector3) {
-			super(index, position, 0x00ff00);
+			super(index, position, marketRewardImg[Math.floor(Math.random() * marketRewardImg.length)]);
 		}
 	}
 
 	export class TrapObstacle extends RoadObstacle {
 		isTouched: boolean;
 		constructor(index: number, position: THREE.Vector3) {
-			super(index, position, 0xff0000);
+			super(index, position, "img/scene_1/insect.png");
 			this.isTouched = false;
 		}
 		touch(): void {

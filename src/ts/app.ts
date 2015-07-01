@@ -20,17 +20,20 @@ module RunningElderly {
 
 		private speed: number;
 		private motion: string;
+		private lastMotion: string;
+		private repeatCount: number;
 
 		constructor(domElem: HTMLElement) {
 			scene = new REScene();
 			camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 10000);
 			renderer = new THREE.WebGLRenderer({
 				precision: "highp",
-				antialias: true
+				antialias: true,
+				alpha: true
 			});
 			raycaster = new THREE.Raycaster();
 
-			renderer.setClearColor(0xffffff, 1);
+			renderer.setClearColor(0xffffff, 0);
 
 			// Camera settup
 			camera.position.y = 15;
@@ -41,22 +44,37 @@ module RunningElderly {
 			renderer.setSize(window.innerWidth, window.innerHeight);
 			this.bindTo(domElem);
 
-			this.speed = 0.5;
+			this.speed = 0.2;
 			this.motion = "";
+			this.repeatCount = 1;
 
 			this.keyboard = new KeyboardState();
 			this.serial = new SerialState((str: string) => {
-				if (str.charAt(0) === 'w') {
-					this.speed = 0.5 + Math.min(100, parseInt(str.slice(2, str.length)));
-					console.log(this.speed);
-				} else if (str.charAt(0) === 's') {
-					this.motion = parseInt(str.slice(2, str.length)) > 17000 ? "l" : "r";
-					console.log(this.motion);
+				if (str.charAt(0) === "w") {
+					this.speed = 0.2 + Math.min(2, parseInt(str.slice(2, str.length)) / 100);
+				} else if (str.charAt(0) === "s") {
+					var g = parseInt(str.slice(2, str.length));
+					if (this.repeatCount === 1 || this.repeatCount > 2) {
+						if (g < - 20000) {
+							this.motion = "l";
+						} else if (g > - 8000) {
+							this.motion = "r";
+						} else {
+							this.motion = " ";
+						}
+					}
+					if (this.lastMotion === this.motion) {
+						++this.repeatCount;
+					} else {
+						this.repeatCount = 0;
+					}
+					this.lastMotion = this.motion;
+					console.log(g + " & " + this.motion);
 				}
 			});
 			this.roadManager = new RoadManager(scene);
 			this.characterManager = new CharacterManager(scene, this.keyboard);
-			this.counter = new ScoreCounter(<HTMLElement> (document.getElementsByClassName('my-counter')[0]));
+			this.counter = new ScoreCounter(<HTMLElement> (document.getElementsByClassName("my-counter")[0]));
 		}
 
 		bindTo(domElem: HTMLElement): void {
@@ -75,8 +93,9 @@ module RunningElderly {
 			this.roadManager.animate(this.keyboard, this.speed);
 
 			this.characterManager.keyboardAnimate(this.keyboard);
-			if (typeof this.motion != 'undefined')
+			if (typeof this.motion != "undefined") {
 				this.characterManager.serialAnimate(this.motion);
+			}
 
 			this.characterManager.removeCollidedObjs(this.roadManager.getAllObstacles(), this.counter);
 
