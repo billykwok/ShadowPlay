@@ -37,5 +37,6 @@
         "./tsd/threejs/three.d.ts",
         "./tsd/webaudioapi/waa.d.ts",
         "./tsd/webrtc/MediaStream.d.ts"
-    ]
+    ],
+    "compileOnSave": false
 }

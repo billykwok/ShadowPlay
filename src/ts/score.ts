@@ -43,6 +43,9 @@ class ScoreCounter {
 	}
 
 	private _updateDisplay(): void {
+		if (this.score < 0) {
+			this.score = 0;
+		}
 		if (this.score >= 10 && RunningElderly.mode === "market") {
 			RunningElderly.mode = "grocery";
 			var finishScreen: HTMLImageElement = <HTMLImageElement> document.createElement("img");
