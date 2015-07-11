@@ -13,5 +13,8 @@
             ]
         }
     },
-    "icons": {}
+    "icons": {
+        "16": "app_logo_16.png",
+        "128": "app_logo_128.png"
+    }
 }
