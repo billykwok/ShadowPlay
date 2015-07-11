@@ -2,10 +2,9 @@
 /// <reference path="base.ts" />
 
 module RunningElderly {
-	var marketRewardImg: Array<string> = [
-		"img/scene_1/carrot.png", "img/scene_1/chilli.png", "img/scene_1/egg.png",
-		"img/scene_1/eggplant.png", "img/scene_1/tomato.png"
-	];
+	var marketRewardImg: Array<string> = ["carrot", "paprika", "egg", "eggplant", "tomato"];
+	var groceryRewardImg: Array<string> = ["basin", "fan", "stool", "thermos", "towel"];
+	var clothRewardImg: Array<string> = ["clothes", "hat", "scarf", "shose", "trouser"];
 
 	export class RoadManager {
 		scene: REScene;
@@ -146,13 +145,8 @@ module RunningElderly {
 	export class RoadObstacle extends THREE.Mesh {
 		constructor(index: number, position: THREE.Vector3, imgPath: string) {
 			var geometry: THREE.PlaneBufferGeometry = new THREE.PlaneBufferGeometry(TRACK_WIDTH / 2, TRACK_WIDTH / 2);
-			var texture: THREE.Texture = THREE.ImageUtils.loadTexture(imgPath);
-			texture.minFilter = THREE.LinearMipMapNearestFilter;
-			texture.magFilter = THREE.NearestFilter;
-			texture.anisotropy = 8;
-
 			var material: THREE.Material = new THREE.MeshBasicMaterial({
-				map: texture,
+				map: resources.textures.getValue(imgPath),
 				transparent: true,
 				side: THREE.FrontSide
 			});
@@ -164,18 +158,19 @@ module RunningElderly {
 
 	export class RewardObstacle extends RoadObstacle {
 		constructor(index: number, position: THREE.Vector3) {
-			super(index, position, marketRewardImg[Math.floor(Math.random() * marketRewardImg.length)]);
+			if (mode === "market") {
+				super(index, position, marketRewardImg[Math.floor(Math.random() * marketRewardImg.length)]);
+			} else if (mode === "grocery") {
+				super(index, position, groceryRewardImg[Math.floor(Math.random() * groceryRewardImg.length)]);
+			} else if (mode === "cloth") {
+				super(index, position, clothRewardImg[Math.floor(Math.random() * clothRewardImg.length)]);
+			}
 		}
 	}
 
 	export class TrapObstacle extends RoadObstacle {
-		isTouched: boolean;
 		constructor(index: number, position: THREE.Vector3) {
-			super(index, position, "img/scene_1/insect.png");
-			this.isTouched = false;
-		}
-		touch(): void {
-			this.isTouched = true;
+			super(index, position, "insect");
 		}
 	}
 

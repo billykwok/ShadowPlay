@@ -25,14 +25,18 @@ var envPaths = {
 	buildPaths = {
 		js: envPaths.build + 'js/',
 		css: envPaths.build + 'css/',
-		img: envPaths.build + 'img/'
+		img: envPaths.build + 'img/',
+		video: envPaths.build + 'video/',
+		audio: envPaths.build + 'audio/'
 	},
 	srcPaths = {
 		html: envPaths.src + '*.html',
 		ts: envPaths.src + 'ts/',
 		tsdBundle: envPaths.src + 'ts/tsd/bundle.d.ts',
 		sass: envPaths.src + 'sass/',
-		img: envPaths.src + 'img/'
+		img: envPaths.src + 'img/',
+		video: envPaths.src + 'video/',
+		audio: envPaths.src + 'audio/'
 	},
 	libPaths = {
 		tscollections: envPaths.npm + 'typescript-collections/',
@@ -79,6 +83,16 @@ gulp.task('img', function() {
 		.pipe(gulp.dest(buildPaths.img));
 });
 
+gulp.task('video', function() {
+	return gulp.src(srcPaths.video + '**/*')
+		.pipe(gulp.dest(buildPaths.video));
+});
+
+gulp.task('audio', function() {
+	return gulp.src(srcPaths.audio + '**/*')
+		.pipe(gulp.dest(buildPaths.audio));
+});
+
 gulp.task('html', function() {
 	return gulp.src(srcPaths.html + '*')
 		.pipe(gulp.dest(envPaths.build));
@@ -103,7 +117,7 @@ gulp.task('update', function() {
 });
 
 gulp.task('build', ['clean'], function() {
-	runSequence('scripts', 'img', 'html');
+	runSequence('scripts', 'img', 'video', 'html');
 });
 
 gulp.task('server', function() {

@@ -24,9 +24,11 @@ module RunningElderly {
 
 		serialAnimate = (signal: string): void => {
 			if (signal.charAt(0) === "l") {
-				this.character.moveLeft();
+				this.character.moveToLeft();
 			} else if (signal.charAt(0) === "r") {
-				this.character.moveRight();
+				this.character.moveToRight();
+			} else if (signal.charAt(0) === "m") {
+				this.character.moveToMiddle();
 			}
 			this.lastReceived = signal;
 		};
@@ -60,10 +62,7 @@ module RunningElderly {
 
 		constructor() {
 			var geometry: THREE.PlaneBufferGeometry = new THREE.PlaneBufferGeometry(TRACK_WIDTH, TRACK_WIDTH);
-			var texture: THREE.Texture = THREE.ImageUtils.loadTexture("img/elderly_back.png");
-			texture.minFilter = THREE.LinearMipMapNearestFilter;
-			texture.magFilter = THREE.NearestFilter;
-			texture.anisotropy = 8;
+			var texture: THREE.Texture = resources.textures.getValue("elderly_middle");
 			this.material = new THREE.MeshBasicMaterial({
 				map: texture,
 				color: 0xffffff,
@@ -84,16 +83,15 @@ module RunningElderly {
 			this.characterDummy = new CharacterDummy();
 			this.add(this.characterDummy);
 
-			var geometry: THREE.PlaneBufferGeometry = new THREE.PlaneBufferGeometry(TRACK_WIDTH, TRACK_WIDTH);
+			var geometry: THREE.PlaneBufferGeometry = new THREE.PlaneBufferGeometry(TRACK_WIDTH * 0.8, TRACK_WIDTH * 0.8);
 			var material: THREE.Material = new THREE.MeshBasicMaterial({
-				// color: 0xff0000
 				visible: false
 			});
 			this.collisionPlane = new THREE.Mesh(geometry, material);
 			this.collisionPlane.name = "collisionPlane";
 			this.collisionPlane.translateZ(- TRACK_WIDTH / 4);
 			this.add(this.collisionPlane);
-			this.position.set(0, TRACK_WIDTH / 2, TRACK_WIDTH * 1.6);
+			this.position.set(0, TRACK_WIDTH / 2, TRACK_WIDTH * 2);
 		}
 
 		moveLeft(): void {
@@ -113,19 +111,19 @@ module RunningElderly {
 		}
 
 		moveToLeft(): void {
-			this.characterDummy.material.map = THREE.ImageUtils.loadTexture("img/elderly_left.png");
+			this.characterDummy.material.map = resources.textures.getValue("elderly_left");
 			this.characterDummy.material.needsUpdate = true;
 			this.position.x = - TRACK_WIDTH;
 		}
 
 		moveToMiddle(): void {
-			this.characterDummy.material.map = THREE.ImageUtils.loadTexture("img/elderly_back.png");
+			this.characterDummy.material.map = resources.textures.getValue("elderly_middle");
 			this.characterDummy.material.needsUpdate = true;
 			this.position.x = 0;
 		}
 
 		moveToRight(): void {
-			this.characterDummy.material.map = THREE.ImageUtils.loadTexture("img/elderly_right.png");
+			this.characterDummy.material.map = resources.textures.getValue("elderly_right");
 			this.characterDummy.material.needsUpdate = true;
 			this.position.x = TRACK_WIDTH;
 		}
