@@ -96,7 +96,7 @@ module RunningElderly {
 
 		clear(element: THREE.Object3D): void {
 			var children = element.children;
-			for (var i = children.length - 1; i >= 0; i--) {
+			for (var i = children.length - 1; i >= 0; --i) {
 				var child = children[i];
 				this.clear(child);
 				child.parent.remove(child);

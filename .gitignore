@@ -12,7 +12,6 @@ Temporary Items
 .LSOverride
 
 ###Bower###
-build/
 vendor/
 node_modules/
 
@@ -22,7 +21,6 @@ node_modules/
 
 ###Compass###
 .sass-cache
-
 
 ###SublimeText###
 *.tmlanguage.cache

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <!-- These three tag must be put before any others! -->
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>Running Elderly</title>
+
+        <!-- CSS Bundle -->
+		<style>
+			body { margin: 0; }
+			.my-counter, #intro-video { position: fixed; top: 0; left: 0; background: transparent; }
+			.my-counter { padding: 20px; }
+			.btn-skip { position: fixed; top: 0; right: 0; background: transparent; padding: 20px; cursor: pointer; font-size: 36px; }
+			.btn-restart { position: fixed; bottom: 0; right: 0; background: transparent; padding: 20px; cursor: pointer; font-size: 36px; }
+			canvas { width: 100%; height: 100%; background-image: url("./img/bg.jpg"); background-size: cover; }
+		</style>
+    </head>
+	<body>
+		<audio src="audio/bgm.mp3" autoplay preload loop></audio>
+		<video id="intro-video" src="video/intro.mp4" width="1024" height="768" autoplay>Video not supported</video>
+		<div class="btn-skip">Skip</div>
+		<div class="btn-restart">Restart</div>
+		<div class="my-counter"></div>
+		<!-- JavaScript -->
+		<script type="text/javascript" src="js/three.min.js"></script>
+		<script type="text/javascript" src="js/app.min.js"></script>
+	</body>
+</html>

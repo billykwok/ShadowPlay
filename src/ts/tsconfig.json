@@ -1,0 +1,41 @@
+{
+    "version": "1.5.0-beta",
+    "compilerOptions": {
+        "target": "es5",
+        "module": "commonjs",
+        "isolatedModules": false,
+        "jsx": "react",
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
+        "declaration": false,
+        "noImplicitAny": false,
+        "removeComments": true,
+        "noLib": false,
+        "preserveConstEnums": true,
+        "suppressImplicitAnyIndexErrors": true
+    },
+    "filesGlob": [
+        "./**/*.ts",
+        "./**/*.tsx",
+        "!./node_modules/**/*"
+    ],
+    "files": [
+        "./app.ts",
+        "./base.ts",
+        "./character.ts",
+        "./collections.ts",
+        "./environment.ts",
+        "./keyboard.ts",
+        "./road.ts",
+        "./score.ts",
+        "./serial.ts",
+        "./tsd/bundle.d.ts",
+        "./tsd/chrome.bluetooth.d.ts",
+        "./tsd/chrome.bluetoothSocket.d.ts",
+        "./tsd/chrome.serial.d.ts",
+        "./tsd/chrome/chrome.d.ts",
+        "./tsd/threejs/three.d.ts",
+        "./tsd/webaudioapi/waa.d.ts",
+        "./tsd/webrtc/MediaStream.d.ts"
+    ]
+}
