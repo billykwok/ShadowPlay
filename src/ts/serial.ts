@@ -42,7 +42,7 @@ module RunningElderly {
 				});
 
 				chrome.serial.onReceive.addListener((info) => {
-					if (new Date().getTime() % 5 == 0 && info.connectionId == this.id && info.data) {
+					if (info.connectionId == this.id && info.data) {
 						var str = ab2str(info.data);
 						if (str.charAt(str.length - 1) === "\n") {
 							this.strReceived += str.substring(0, str.length - 1);
