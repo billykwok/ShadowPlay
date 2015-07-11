@@ -67,7 +67,6 @@ var RunningElderly;
             this.roadManager = new RunningElderly.RoadManager(scene);
             this.characterManager = new RunningElderly.CharacterManager(scene, this.keyboard);
             this.stop = false;
-            this.render();
         };
         Game.prototype.clear = function (element) {
             var children = element.children;

@@ -91,7 +91,6 @@ module RunningElderly {
 			this.roadManager = new RoadManager(scene);
 			this.characterManager = new CharacterManager(scene, this.keyboard);
 			this.stop = false;
-			this.render();
 		}
 
 		clear(element: THREE.Object3D): void {
