@@ -21,7 +21,7 @@ module RunningElderly {
 
 			chrome.serial.getDevices((ports) => {
 				for (var i = 0; i < ports.length; ++i) {
-					// console.log(ports[i].path);
+					console.log(ports[i].path);
 					if (ports[i].path.indexOf("/dev/cu.wch ch341") > -1) {
 						console.log(ports[i].path);
 						this.devicePath = ports[i].path;
