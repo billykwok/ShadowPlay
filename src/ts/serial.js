@@ -14,8 +14,7 @@ var RunningElderly;
             this.strReceived = "";
             chrome.serial.getDevices(function (ports) {
                 for (var i = 0; i < ports.length; ++i) {
-                    console.log(ports[i].path);
-                    if (ports[i].path.indexOf("/dev/cu.wch ch341") > -1) {
+                    if (ports[i].path.indexOf("/dev/cu.wch ch341") > -1 || ports[i].path.indexOf("COM3") > -1) {
                         console.log(ports[i].path);
                         _this.devicePath = ports[i].path;
                         break;
