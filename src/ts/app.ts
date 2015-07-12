@@ -127,6 +127,10 @@ window.onload = () => {
 
 	var btnRestart: HTMLDivElement = <HTMLDivElement> document.getElementsByClassName("btn-restart")[0];
 	btnRestart.onclick = () => {
+		if (document.getElementById("finish-screen")) {
+			var finishScreen: HTMLImageElement = <HTMLImageElement> document.getElementById("finish-screen");
+			finishScreen.parentNode.removeChild(finishScreen);
+		}
 		game.restart();
 	};
 

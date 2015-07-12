@@ -70,6 +70,7 @@ class ScoreCounter {
 			}, 2000);
 		} else if (this.score >= 30) {
 			var finishScreen: HTMLImageElement = <HTMLImageElement> document.createElement("img");
+			finishScreen.setAttribute("id", "finish-screen");
 			finishScreen.setAttribute("src", "img/finish.png");
 			finishScreen.setAttribute("width", "1024");
 			finishScreen.setAttribute("height", "768");
