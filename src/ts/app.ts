@@ -73,7 +73,10 @@ module RunningElderly {
 		}
 
 		start(): void {
-			this.counter = new ScoreCounter(<HTMLElement> (document.getElementsByClassName("my-counter")[0]));
+			this.counter = new ScoreCounter(
+				<HTMLElement> (document.getElementsByClassName("my-counter")[0]),
+				() => this.restart()
+			);
 			this.render();
 		}
 

@@ -18,10 +18,13 @@ declare module chrome.app.window {
 class ScoreCounter {
 	domElement: HTMLElement;
 	score: number;
+	onFinished: () => void;
 
-	constructor(domElement: HTMLElement) {
+	constructor(domElement: HTMLElement, onFinished: () => void) {
 		this.score = 0;
 		this.domElement = domElement;
+		this.onFinished = onFinished;
+
 		if (typeof this.domElement != "undefined") {
 			this.domElement.setAttribute("style", "padding: 10px; font-size: 64px;");
 		}
@@ -76,6 +79,10 @@ class ScoreCounter {
 			finishScreen.setAttribute("height", "768");
 			finishScreen.setAttribute("style", "position: fixed; left: 0; bottom: 0; z-index: 9;");
 			document.body.appendChild(finishScreen);
+			setTimeout(() => {
+				finishScreen.parentNode.removeChild(finishScreen);
+				this.onFinished();
+			}, 5000);
 		}
 		this.domElement.innerHTML = this.score.toString();
 	}
